@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container my-4">
+  <h4 class="mb-3">My Orders</h4>
+
+  {% if orders %}
+  <div class="list-group">
+    {% for order in orders %}
+    <div class="list-group-item mb-3 shadow-sm">
+      <div class="d-flex justify-content-between">
+        <div>
+          <strong>Order:</strong> {{ order.order_number }} <br>
+          <small class="text-muted">{{ order.created_at|date:"d M Y" }}</small>
+        </div>
+
+        <div class="text-end">
+          <span class="badge 
+                {% if order.status == 'pending' %} bg-warning
+                {% elif order.status == 'placed' %} bg-info
+                {% elif order.status == 'shipped' %} bg-primary
+                {% elif order.status == 'delivered' %} bg-success
+                {% elif order.status == 'cancelled' %} bg-danger
+                {% elif order.status == 'returned' %} bg-secondary
+                {% endif %}
+              ">
+            {{ order.get_status_display }}
+          </span>
+        </div>
+      </div>
+
+      <hr>
+
+      <p class="mb-1"><strong>Total:</strong> ₹{{ order.total_amount }}</p>
+
+      <!-- PAYMENT STATUS -->
+      {% if order.payment %}
+      <p class="mb-1">
+        <strong>Payment:</strong>
+        {% if order.payment.method == 'cod' %}
+        {% if order.payment.status == 'paid' %}
+        <span class="text-success">Paid (COD)</span>
+        {% else %}
+        <span class="text-warning">Pay on Delivery</span>
+        {% endif %}
+        {% else %}
+        <span class="text-success">Online</span>
+        {% endif %}
+      </p>
+      {% endif %}
+
+      <div class="mt-3 d-flex gap-2 flex-wrap">
+
+        <!-- INVOICE -->
+        {% if order.status in 'placed shipped delivered returned' %}
+        <a href="{% url 'order:download_invoice' order.order_number %}" class="btn btn-sm btn-outline-dark">
+          Invoice
+        </a>
+        {% endif %}
+
+        <!-- CANCEL (ONLY BEFORE SHIPPED) -->
+        {% if order.status == 'placed' and order.payment %}
+        {% if order.payment.method == 'cod' and order.payment.status != 'paid' %}
+        <a href="{% url 'order:cancel_order' order.order_number %}" class="btn btn-sm btn-danger">
+          Cancel Order
+        </a>
+        {% endif %}
+        {% endif %}
+
+        <!-- RETURN (ONLY AFTER DELIVERED) -->
+        {% if order.status == 'delivered' %}
+        <a href="{% url 'order:return_order' order.order_number %}" class="btn btn-sm btn-warning">
+          Return Order
+        </a>
+
+        {% elif order.status == 'return_requested' %}
+        <span class="badge bg-warning text-dark">
+          Return Requested
+        </span>
+        {% endif %}
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>No orders found.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

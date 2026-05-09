@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice - {{ order.order_number }}</title>
+    <style>
+        /* Reset & Base */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        h1, h2, h3, h4 {
+            margin: 0.5rem 0;
+        }
+
+        h3 {
+            color: #0d6efd; /* Bootstrap primary color */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .info-block {
+            margin-bottom: 1rem;
+        }
+
+        .info-block p {
+            margin: 2px 0;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- HEADER -->
+    <h3>Invoice</h3>
+    <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+    <p><strong>Date:</strong> {{ order.created_at|date:"d M Y, H:i" }}</p>
+
+    <!-- CUSTOMER INFO -->
+    <div class="info-block">
+        <h4>Billing / Shipping Information</h4>
+        <p><strong>{{ order.address.full_name }}</strong></p>
+        <p>{{ order.address.line1 }}, {{ order.address.city }} - {{ order.address.pincode }}</p>
+        <p>{{ order.address.state }}, {{ order.address.country }}</p>
+        <p><strong>Phone:</strong> {{ order.address.phone }}</p>
+    </div>
+
+    <!-- PAYMENT METHOD -->
+    {% if order.payment %}
+    <div class="info-block">
+        <h4>Payment Details</h4>
+        <p><strong>Method:</strong>
+            {% if order.payment.method == 'cod' %}
+                Cash on Delivery
+            {% else %}
+                Online Payment
+            {% endif %}
+        </p>
+        <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+    </div>
+    {% endif %}
+
+    <!-- ORDER ITEMS -->
+    <h4>Items</h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in order.items.all %}
+        <tr>
+            <td>{{ item.product_name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₹{{ item.subtotal|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- TOTAL -->
+    <p class="total">Total Amount: ₹{{ order.total_amount|floatformat:2 }}</p>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Thank you for shopping with us!<br>
+        Visit us again at <a href="{{ request.scheme }}://{{ request.get_host }}" target="_blank">{{ request.get_host }}</a>
+    </div>
+</div>
+</body>
+</html>

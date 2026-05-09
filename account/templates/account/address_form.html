@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if address %}Edit Address{% else %}Add Address{% endif %} | My Account
+{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Add or edit your shipping and billing addresses for faster checkout.">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-sm rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <h2 class="text-center fw-semibold mb-3">
+                        {% if address %}Edit Address{% else %}Add Address{% endif %}
+                    </h2>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} py-2 small">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Full Name</label>
+                            <input type="text" name="full_name" class="form-control"
+                                   placeholder="Full Name"
+                                   value="{{ address.full_name|default:'' }}"
+                                   required>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Phone</label>
+                            <input type="text" name="phone" class="form-control"
+                                   placeholder="Phone Number"
+                                   value="{{ address.phone|default:'' }}"
+                                   required>
+                        </div>
+
+                        <!-- Address Line 1 -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Address Line 1</label>
+                            <input type="text" name="address_line_1" class="form-control"
+                                   placeholder="Address Line 1"
+                                   value="{{ address.address_line_1|default:'' }}"
+                                   required>
+                        </div>
+
+                        <!-- Address Line 2 -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Address Line 2</label>
+                            <input type="text" name="address_line_2" class="form-control"
+                                   placeholder="Address Line 2"
+                                   value="{{ address.address_line_2|default:'' }}">
+                        </div>
+
+                        <!-- City -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">City</label>
+                            <input type="text" name="city" class="form-control"
+                                   placeholder="City"
+                                   value="{{ address.city|default:'' }}"
+                                   required>
+                        </div>
+
+                        <!-- State -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">State</label>
+                            <input type="text" name="state" class="form-control"
+                                   placeholder="State"
+                                   value="{{ address.state|default:'' }}"
+                                   required>
+                        </div>
+
+                        <!-- Pincode -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Pincode</label>
+                            <input type="text" name="pincode" class="form-control"
+                                   placeholder="Pincode"
+                                   value="{{ address.pincode|default:'' }}"
+                                   required>
+                        </div>
+
+                        <!-- Address Type -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Address Type</label>
+                            <select name="address_type" class="form-control" required>
+                                <option value="shipping"
+                                    {% if address.address_type == "shipping" %}selected{% endif %}>
+                                    Shipping
+                                </option>
+                                <option value="billing"
+                                    {% if address.address_type == "billing" %}selected{% endif %}>
+                                    Billing
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Default Address -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox"
+                                   id="is_default" name="is_default"
+                                   {% if address.is_default %}checked{% endif %}>
+                            <label class="form-check-label" for="is_default">
+                                Set as default address
+                            </label>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                {% if address %}Update Address{% else %}Save Address{% endif %}
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Complete Payment{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+
+      <div class="card shadow-sm p-4 text-center">
+        <h4 class="mb-3">Complete Your Payment</h4>
+
+        <p class="mb-1">
+          <strong>Order:</strong> {{ order.order_number }}
+        </p>
+        <p class="mb-3">
+          <strong>Amount:</strong> ₹{{ order.total_amount }}
+        </p>
+
+        <button id="rzp-button" class="btn btn-primary btn-lg w-100">
+          Pay Now
+        </button>
+
+        <p class="text-muted mt-3" style="font-size: 14px;">
+          Secure payments powered by Razorpay
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "{{ razorpay_key }}",
+    "amount": "{{ amount }}",
+    "currency": "INR",
+    "order_id": "{{ razorpay_order_id }}",
+    "handler": function (response){
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{{ callback_url }}";
+        ['razorpay_payment_id','razorpay_order_id','razorpay_signature'].forEach(function(k){
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = k;
+            input.value = response[k];
+            form.appendChild(input);
+        });
+        document.body.appendChild(form);
+        form.submit();
+    }
+};
+var rzp = new Razorpay(options);
+document.getElementById('rzp-button').onclick = function(e){ rzp.open(); e.preventDefault(); };
+</script>
+
+{% endblock %}

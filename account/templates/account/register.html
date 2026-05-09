@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account | Register{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Create your account to manage orders, addresses and checkout faster.">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <h2 class="text-center fw-semibold mb-2">
+                        Create Account
+                    </h2>
+                    <p class="text-center text-muted mb-4">
+                        Join us to start shopping
+                    </p>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} py-2 small">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+
+                        {% if request.GET.next %}
+                            <input type="hidden" name="next" value="{{ request.GET.next }}">
+                        {% endif %}
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">
+                                Full Name
+                            </label>
+                            <input
+                                type="text"
+                                name="username"
+                                class="form-control"
+                                placeholder="Your full name"
+                                value="{{ request.POST.username }}"
+                                required
+                            >
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">
+                                Email address
+                            </label>
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="you@example.com"
+                                value="{{ request.POST.email }}"
+                                required
+                            >
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Create a password"
+                                required
+                            >
+                            <div class="form-text small">
+                                Use at least 8 characters for better security
+                            </div>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Create Account
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <small class="text-muted">
+                            Already have an account?
+                            <a href="{% url 'account:login' %}" class="fw-medium">
+                                Login
+                            </a>
+                        </small>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

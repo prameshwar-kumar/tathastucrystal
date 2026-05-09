@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container my-4">
+
+  <!-- ================= Image Slider ================= -->
+  <div id="imageSlider" class="carousel slide mx-auto" style="max-width:1000px;" data-bs-ride="carousel"
+    data-bs-interval="1500">
+    <div class="carousel-inner">
+      {% for i in "1234567" %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <img src="{% static 'images/banner'|add:i|add:'.jpg' %}" class="d-block w-100 rounded"
+          style="height:550px; object-fit:content;" alt="Slide {{ i }}">
+      </div>
+      {% endfor %}
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#imageSlider" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#imageSlider" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+
+    <div class="carousel-indicators">
+      {% for i in "1234567" %}
+      <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="{{ forloop.counter0 }}"
+        class="{% if forloop.first %}active{% endif %}">
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ================= Crystal Categories ================= -->
+  <h3 class="my-4 text-center" id="products">Crystal Best Categories </h3>
+
+  <div class="row g-4">
+    {% for category in crystal_categories %}
+    <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+      <a href="{{ category.get_absolute_url }}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm">
+          {% if category.image %}
+          <img src="{{ category.image.url }}" class="card-img-top" style="height:297px; object-fit:contain;">
+          {% else %}
+          <img src="{% static 'images/category-placeholder.jpg' %}" class="card-img-top"
+            style="height:180px; object-fit:cover;">
+          {% endif %}
+          <div class="card-body text-center p-2">
+            <p class="mb-0 fw-bold">{{ category.name }}</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <p class="text-center">No crystal categories found.</p>
+    {% endfor %}
+  </div>
+
+  <!-- ================= Puja Categories ================= -->
+  <h3 class="my-3 text-center">Puja Best Categories</h3>
+
+  <div class="row g-4">
+    {% for category in worship_categories %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <a href="{{ category.get_absolute_url }}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm">
+          {% if category.image %}
+          <img src="{{ category.image.url }}" class="card-img-top" style="height:297px; object-fit:contain;">
+          {% else %}
+          <img src="{% static 'images/category-placeholder.jpg' %}" class="card-img-top"
+            style="height:180px; object-fit:cover;">
+          {% endif %}
+          <div class="card-body text-center p-2">
+            <p class="mb-0 fw-bold">{{ category.name }}</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <p class="text-center">No puja categories found.</p>
+    {% endfor %}
+  </div>
+
+  <!-- ================= Blog Section ================= -->
+  <h3 id="homeBlog" class="my-5 text-center fw-bold">Latest Insights & Blogs</h3>
+
+  <div id="homeBlogSlider" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500" data-bs-pause="false"
+    data-bs-touch="true">
+
+    <div class="carousel-inner">
+
+      {% for blog in blogs %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <div class="container">
+          <div class="card blog-card mx-auto border-0 shadow-sm">
+
+            {% if blog.image %}
+            <a href="{{ blog.get_absolute_url }}">
+              <img src="{{ blog.image.url }}" class="card-img-top rounded-top" style="height:320px; object-fit:cover;"
+                alt="{{ blog.title }}">
+            </a>
+            {% endif %}
+
+            <div class="card-body px-4 py-4">
+
+              <h4 class="fw-bold mb-2">{{ blog.title }}</h4>
+
+              <p class="text-muted small mb-3">
+                {{ blog.created_at|date:"d M Y" }}
+              </p>
+
+              <p class="card-text text-secondary">
+                {{ blog.content|truncatechars:120 }}
+              </p>
+
+              <a href="{{ blog.get_absolute_url }}" class="btn btn-outline-dark btn-sm mt-2">
+                Read Full Article →
+              </a>
+
+              <!-- ===== Related Products ===== -->
+              <div class="mt-4">
+                <p class="fw-semibold mb-2 small text-uppercase text-muted">
+                  Related Products
+                </p>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                  {% for crystal in blog.related_crystals.all %}
+                  <a href="{{ crystal.get_absolute_url }}" class="related-icon">
+                    <img src="{{ crystal.image.url }}" alt="{{ crystal.name }}">
+                  </a>
+                  {% endfor %}
+
+                  {% for worship in blog.related_worship.all %}
+                  <a href="{{ worship.get_absolute_url }}" class="related-icon">
+                    <img src="{{ worship.image.url }}" alt="{{ worship.name }}">
+                  </a>
+                  {% endfor %}
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+
+    <!-- Slider Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeBlogSlider" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#homeBlogSlider" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+
+  </div>
+</div>
+<!-- ================= UI Enhancements ================= -->
+<style>
+  .blog-card {
+    max-width: 720px;
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+
+  .blog-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .12);
+  }
+
+  .related-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  .related-icon img {
+    max-height: 42px;
+    object-fit: contain;
+  }
+
+  .related-icon:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .15);
+  }
+</style>
+{% endblock %}

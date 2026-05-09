@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container my-5">
+    <h2 class="mb-4 fw-semibold">Checkout</h2>
+
+    {% if cart.total_items == 0 %}
+        <div class="alert alert-warning">
+            Your cart is empty.
+        </div>
+    {% else %}
+
+    <form method="post" class="row g-4">
+        {% csrf_token %}
+
+        <!-- LEFT : ADDRESS SELECTION -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="mb-3 fw-semibold">Select Delivery Address</h5>
+
+                    {% for address in addresses %}
+                        <div class="form-check border rounded p-3 mb-3">
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="address"
+                                id="address{{ address.id }}"
+                                value="{{ address.id }}"
+                                {% if forloop.first %}checked{% endif %}
+                            >
+                            <label class="form-check-label w-100" for="address{{ address.id }}">
+                                <strong>{{ address.full_name }}</strong><br>
+                                <small class="text-muted">
+                                    {{ address.line1 }}, {{ address.city }} – {{ address.pincode }}
+                                </small>
+                            </label>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">
+                            No saved addresses.
+                            <a href="{% url 'account:address_add' %}" class="text-decoration-none">
+                                Add Address
+                            </a>
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT : ORDER SUMMARY -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="mb-3 fw-semibold">Order Summary</h5>
+
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for item in cart.items.all %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <div class="fw-medium">{{ item.product_name }}</div>
+                                    <small class="text-muted">Qty: {{ item.quantity }}</small>
+                                </div>
+                                <span>₹{{ item.price|floatformat:2 }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="d-flex justify-content-between fw-semibold fs-5 border-top pt-3">
+                        <span>Total</span>
+                        <span>₹{{ total|floatformat:2 }}</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-4">
+                        Proceed to Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+    {% endif %}
+</div>
+
+{% endblock %}

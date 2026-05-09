@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <h3 class="mb-4 fw-semibold text-center">
+                        Select Payment Method
+                    </h3>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- COD -->
+                        <label class="d-block border rounded p-3 mb-3 cursor-pointer">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="payment_method"
+                                    value="cod"
+                                    id="cod"
+                                    required
+                                >
+                                <div class="ms-2">
+                                    <span class="fw-medium">Cash on Delivery</span><br>
+                                    <small class="text-muted">
+                                        Pay when your order is delivered
+                                    </small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- RAZORPAY -->
+                        <label class="d-block border rounded p-3 mb-4 cursor-pointer">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="payment_method"
+                                    value="razorpay"
+                                    id="razorpay"
+                                >
+                                <div class="ms-2">
+                                    <span class="fw-medium">Pay Online</span><br>
+                                    <small class="text-muted">
+                                        Secure payment via Razorpay
+                                    </small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            Continue
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

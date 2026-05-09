@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}My Addresses | Account{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Manage your shipping and billing addresses.">
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-semibold">My Addresses</h2>
+        <a href="{% url 'account:address_add' %}" class="btn btn-primary">
+            Add Address
+        </a>
+    </div>
+
+    <hr>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} py-2 small">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if addresses %}
+        <div class="row g-3">
+            {% for address in addresses %}
+                <div class="col-md-6">
+                    <div class="card shadow-sm rounded-3 h-100">
+                        <div class="card-body">
+
+                            <h6 class="fw-medium mb-1">
+                                {{ address.full_name }}
+                                {% if address.is_default %}
+                                    <span class="badge bg-success ms-2">Default</span>
+                                {% endif %}
+                            </h6>
+
+                            <p class="mb-1 small">
+                                {{ address.address_line_1 }}
+                                {% if address.address_line_2 %}
+                                    , {{ address.address_line_2 }}
+                                {% endif %}
+                                <br>
+                                {{ address.city }}, {{ address.state }} - {{ address.pincode }}
+                                <br>
+                                Phone: {{ address.phone }}
+                            </p>
+
+                            <small class="text-muted">
+                                Type: {{ address.get_address_type_display }}
+                            </small>
+
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+
+                                <!-- EDIT -->
+                                <a href="{% url 'account:address_edit' address.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Edit
+                                </a>
+
+                                <!-- DELETE -->
+                                <form method="post"
+                                      action="{% url 'account:address_delete' address.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Delete this address?')">
+                                        Delete
+                                    </button>
+                                </form>
+
+                                <!-- SET DEFAULT (POST ONLY) -->
+                                {% if not address.is_default %}
+                                    <form method="post"
+                                          action="{% url 'account:address_set_default' address.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-success">
+                                            Set Default
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">
+            No addresses added yet.
+            <a href="{% url 'account:address_add' %}">Add Address</a>
+        </p>
+    {% endif %}
+
+</div>
+{% endblock %}

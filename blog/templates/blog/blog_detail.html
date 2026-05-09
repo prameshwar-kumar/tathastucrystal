@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+
+  <!-- ================= Blog Header ================= -->
+  <div class="card shadow-sm border-0 mb-4">
+    {% if blog.image %}
+      <a href="{{ blog.image.url }}" target="_blank">
+        <img src="{{ blog.image.url }}"
+             class="card-img-top rounded-top"
+             style="height:380px; object-fit:cover;">
+      </a>
+    {% endif %}
+
+    <div class="card-body px-4 py-4">
+      <h2 class="fw-bold mb-2">{{ blog.title }}</h2>
+      <p class="text-muted mb-3">
+        Published on {{ blog.created_at|date:"d M Y" }}
+      </p>
+
+      <div class="blog-content fs-6 lh-lg">
+        {{ blog.content|linebreaks }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= Related Crystals ================= -->
+  {% if blog.related_crystals.all %}
+  <h4 class="fw-bold mt-5 mb-3">Related Crystals Products</h4>
+
+  <div class="row g-3">
+    {% for crystal in blog.related_crystals.all %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
+        <a href="{{ crystal.get_absolute_url }}" class="text-decoration-none text-dark">
+          <div class="card h-100 shadow-sm border-0 hover-card">
+            <img src="{{ crystal.image.url }}"
+                 class="mx-auto mt-3"
+                 style="height:120px; object-fit:contain;"
+                 alt="{{ crystal.name }}">
+            <div class="card-body p-2">
+              <p class="mb-0 fw-semibold small">{{ crystal.name }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ================= Related Puja Products ================= -->
+  {% if blog.related_worship.all %}
+  <h4 class="fw-bold mt-5 mb-3">Related Worship Products</h4>
+
+  <div class="row g-3">
+    {% for worship in blog.related_worship.all %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
+        <a href="{{ worship.get_absolute_url }}" class="text-decoration-none text-dark">
+          <div class="card h-100 shadow-sm border-0 hover-card">
+            <img src="{{ worship.image.url }}"
+                 class="mx-auto mt-3"
+                 style="height:120px; object-fit:contain;"
+                 alt="{{ worship.name }}">
+            <div class="card-body p-2">
+              <p class="mb-0 fw-semibold small">{{ worship.name }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- ================= Extra UI Styling ================= -->
+<style>
+  .hover-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 14px;
+  }
+  .hover-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  }
+  .blog-content p {
+    margin-bottom: 1rem;
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | My Account{% endblock %}
+
+{% block meta %}
+<meta name="description" content="View and edit your profile information, including name, email and password.">
+{% endblock %}
+
+{% block content %}
+<style>
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 28px;
+    }
+
+    .profile-avatar {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d6efd, #5a8dee);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        flex-shrink: 0;
+    }
+
+    .profile-name {
+        font-size: 1.35rem;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .profile-email {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .profile-card {
+        border-radius: 18px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-control {
+        height: 48px;
+        border-radius: 10px;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
+    }
+
+    .btn-profile {
+        height: 50px;
+        border-radius: 12px;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+    }
+
+    .alert {
+        border-radius: 10px;
+        font-size: 0.875rem;
+    }
+</style>
+
+<div class="container my-5">
+
+    <!-- PROFILE HEADER -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {{ request.user.username|slice:":1" }}
+        </div>
+        <div>
+            <div class="profile-name">
+                {{ request.user.username }}
+            </div>
+            <div class="profile-email">
+                {{ request.user.email }}
+            </div>
+        </div>
+    </div>
+
+    <!-- MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- PROFILE FORM -->
+    <div class="card profile-card border-0">
+        <div class="card-body p-4 p-md-5">
+
+            <form method="POST" novalidate>
+                {% csrf_token %}
+
+                <!-- FULL NAME -->
+                <div class="mb-4">
+                    <label class="form-label fw-medium">Full Name</label>
+                    <input
+                        type="text"
+                        name="username"
+                        class="form-control"
+                        value="{{ request.user.username }}"
+                        required
+                    >
+                </div>
+
+                <!-- EMAIL -->
+                <div class="mb-4">
+                    <label class="form-label fw-medium">Email Address</label>
+                    <input
+                        type="email"
+                        class="form-control bg-light"
+                        value="{{ request.user.email }}"
+                        disabled
+                    >
+                    <div class="form-text">
+                        Email address cannot be changed.
+                    </div>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="mb-4">
+                    <label class="form-label fw-medium">Change Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Enter new password"
+                    >
+                    <div class="form-text">
+                        Leave blank if you don’t want to update your password.
+                    </div>
+                </div>
+
+                <!-- SUBMIT -->
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-profile">
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

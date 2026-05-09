@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- SUCCESS CARD -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+                        <h3 class="fw-semibold text-success">
+                            Order Placed Successfully
+                        </h3>
+                        <p class="text-muted mb-0">
+                            Thank you for your purchase. Your order has been confirmed.
+                        </p>
+                    </div>
+
+                    <!-- ORDER META -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 h-100">
+                                <small class="text-muted">Order Number</small>
+                                <div class="fw-semibold">
+                                    {{ order.order_number }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 h-100">
+                                <small class="text-muted">Order Status</small>
+                                <div class="fw-semibold">
+                                    {{ order.get_status_display }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 h-100">
+                                <small class="text-muted">Total Amount</small>
+                                <div class="fw-semibold">
+                                    ₹{{ order.total_amount|floatformat:2 }}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if order.payment %}
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 h-100">
+                                <small class="text-muted">Payment Method</small>
+                                <div class="fw-semibold">
+                                    {% if order.payment.method == 'cod' %}
+                                        Cash on Delivery
+                                    {% else %}
+                                        Online Payment
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- ITEMS -->
+                    <h5 class="fw-semibold mb-3">Ordered Items</h5>
+
+                    <ul class="list-group list-group-flush mb-4">
+                        {% for item in order.items.all %}
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <div>
+                                    <div class="fw-medium">
+                                        {{ item.product_name }}
+                                    </div>
+                                    <small class="text-muted">
+                                        Quantity: {{ item.quantity }}
+                                    </small>
+                                </div>
+                                <div class="fw-medium">
+                                    ₹{{ item.subtotal|floatformat:2 }}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- ACTIONS -->
+                    <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center border-top pt-4">
+                        <a href="{% url 'order:order_list' %}" class="btn btn-outline-secondary">
+                            View All Orders
+                        </a>
+
+                        {% if order.payment and order.payment.method == 'razorpay' %}
+                            <a href="{% url 'order:download_invoice' order.order_number %}" class="btn btn-primary">
+                                Download Invoice
+                            </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

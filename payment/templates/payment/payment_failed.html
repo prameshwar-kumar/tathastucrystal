@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Payment Failed</h2>
+<p>Unfortunately, your payment could not be processed.</p>
+<p><a href="{% url 'payment:payment_retry' %}">Try Again</a></p>
+
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+
+<style>
+  .qty-wrapper {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    height: 36px;
+    background: #fff;
+  }
+
+  .btn-qty {
+    border: none;
+    background: transparent;
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 0;
+    line-height: 1;
+    color: #0d6efd;
+  }
+
+  .btn-qty:hover {
+    background: #f1f3f5;
+    cursor: pointer;
+  }
+
+  .qty-value {
+    min-width: 36px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  table td, table th {
+    vertical-align: middle;
+  }
+
+  .cart-empty {
+    text-align: center;
+    margin: 50px 0;
+  }
+</style>
+
+<div class="container my-4">
+
+  <h3 class="mb-4">Your Cart</h3>
+
+  {% if cart.items.exists %}
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for item in cart.items.all %}
+        <tr>
+
+          <!-- PRODUCT -->
+          <td>
+            <div class="d-flex align-items-center">
+              {% if item.image_url %}
+                <img src="{{ item.image_url }}" width="60" class="me-2 rounded">
+              {% endif %}
+              <div>
+                <span>{{ item.product_name }}</span><br>
+                <small class="text-muted">{{ item.app_source|capfirst }}</small>
+              </div>
+            </div>
+          </td>
+
+          <!-- PRICE -->
+          <td>₹{{ item.price }}</td>
+
+          <!-- QUANTITY -->
+          <td>
+            <div class="qty-wrapper">
+
+              <!-- MINUS -->
+              <form method="post" action="{% url 'cart:update' item.id 'minus' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-qty">−</button>
+              </form>
+
+              <span class="qty-value">{{ item.quantity }}</span>
+
+              <!-- PLUS -->
+              <form method="post" action="{% url 'cart:update' item.id 'plus' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-qty">+</button>
+              </form>
+
+            </div>
+          </td>
+
+          <!-- SUBTOTAL -->
+          <td>₹{{ item.subtotal }}</td>
+
+          <!-- REMOVE -->
+          <td>
+            <form method="post" action="{% url 'cart:remove' item.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+            </form>
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TOTAL & ACTIONS -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4">
+    <div class="mb-3 mb-md-0">
+      <h5>Total: <strong>₹{{ cart.total_amount }}</strong></h5>
+    </div>
+    <div>
+      <a href="{% url 'home' %}" class="btn btn-outline-primary me-2">Continue Shopping</a>
+      <a href="{% url 'order:checkout' %}" class="btn btn-success">Proceed to Buy</a>
+    </div>
+  </div>
+
+  {% else %}
+    <div class="cart-empty">
+      <h5>Your cart is empty.</h5>
+      <a href="{% url 'home' %}" class="btn btn-primary mt-3">Start Shopping</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

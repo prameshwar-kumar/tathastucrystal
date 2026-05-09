@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Email | OTP Verification{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Verify your email address using the OTP sent to your email. Complete registration to start shopping.">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <h2 class="text-center fw-semibold mb-3">Verify Your Email</h2>
+                    <p class="text-center text-muted mb-4">
+                        Enter the OTP sent to your email to complete registration
+                    </p>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} py-2 small">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+
+                        <!-- OTP -->
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">OTP</label>
+                            <input
+                                type="text"
+                                name="otp"
+                                class="form-control"
+                                placeholder="Enter 6-digit OTP"
+                                required
+                            >
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Verify
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <small class="text-muted">
+                            Didn't receive the OTP?
+                            <a href="{% url 'account:resend_otp' %}" class="fw-medium">
+                                Resend OTP
+                            </a>
+                        </small>
+                        <p class="text-muted small mt-1">
+                            OTP is valid for 10 minutes
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

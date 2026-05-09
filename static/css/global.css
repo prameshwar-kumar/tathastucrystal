@@ -1,0 +1,322 @@
+/* ============================================================
+   GENERAL
+==============================================================*/
+body {
+    background: #f5f5f5;
+    color: #222;
+    font-family: 'Inter', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+/* ============================================================
+   LOGO (HEADER + FOOTER)
+==============================================================*/
+.logo-img,
+.footer-logo-img {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer-logo-img {
+    height: 55px;
+    filter: brightness(0) invert(1);
+}
+
+.logo-text {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #222;
+}
+
+/* ============================================================
+   MAIN NAVIGATION
+==============================================================*/
+.main-nav {
+    background: #ffffff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.nav-item-main {
+    color: #222 !important;
+    padding: 8px 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.nav-item-main:hover {
+    color: #e60000 !important;
+}
+
+.nav-follow-text {
+    color: #333;
+    font-weight: 500;
+}
+
+.social-icon i {
+    font-size: 20px;
+    color: #222;
+}
+
+.social-icon:hover i {
+    color: #e60000;
+}
+
+/* ============================================================
+   DROPDOWNS
+==============================================================*/
+.dropdown-menu {
+    background: #fff;
+    border: 1px solid #ccc;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.dropdown-item {
+    color: #222 !important;
+}
+
+.dropdown-item:hover {
+    background: #f5f5f5;
+}
+
+@media (min-width: 768px) {
+    .main-nav .dropdown:hover > .dropdown-menu {
+        display: block;
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   SEARCH BAR
+==============================================================*/
+.search-input {
+    background: #fff;
+    color: #222;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.btn-search {
+    background: #e60000;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+}
+
+.btn-search:hover {
+    background: #c70000;
+}
+
+/* Mobile Search */
+.mobile-search {
+    padding: 10px 0;
+}
+
+/* ============================================================
+   HEADER RIGHT ICONS
+==============================================================*/
+.nav-icon {
+    color: #222 !important;
+    font-size: 20px;
+}
+
+.toggle-dark {
+    background: transparent;
+    color: #222;
+    border: none;
+}
+
+/* CART BADGE */
+.cart-badge {
+    background: #e60000;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    position: relative;
+    top: -10px;
+    right: 10px;
+}
+
+/* ============================================================
+   MOBILE MENU
+==============================================================*/
+.mobile-menu {
+    background: #fff;
+    border-top: 1px solid #ccc;
+    padding: 15px;
+}
+
+.mobile-link {
+    display: block;
+    color: #222 !important;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.mobile-link:hover {
+    color: #e60000 !important;
+}
+
+/* ============================================================
+   FOOTER
+==============================================================*/
+.footer-section {
+    background: #111;
+    color: #eee;
+}
+
+.footer-heading {
+    color: #fff;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.footer-link {
+    display: block;
+    color: #ccc !important;
+    margin-bottom: 6px;
+}
+
+.footer-link:hover {
+    color: #fff !important;
+}
+
+.footer-text {
+    color: #ccc;
+}
+
+.footer-line {
+    border-color: #444;
+}
+
+/* ============================================================
+   RESPONSIVE IMPROVEMENTS
+==============================================================*/
+@media (max-width: 576px) {
+    .footer-section .col-md-4,
+    .footer-section .col-md-2,
+    .footer-section .col-md-3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .footer-logo-img {
+        margin-bottom: 10px;
+    }
+}
+
+/* ============================================================
+   MOBILE VIEW
+   Show only logo at top (centered), hide other top elements
+==============================================================*/
+@media (max-width: 768px) {
+    /* Hide top header elements except logo */
+    .top-header .right-icons,
+    .top-header .search-section,
+    .main-nav,
+    #desktopMenu,
+    #mobileMenuBtn,
+    #mobileSearch {
+        display: none !important;
+    }
+
+    /* Keep logo visible and centered */
+    .top-header .container {
+        display: flex !important;
+        justify-content: center !important; /* horizontally center logo */
+        align-items: center; /* vertical center */
+        padding: 5px 10px;
+    }
+
+    .top-header .logo-img,
+    .top-header .logo-text {
+        display: inline-block !important;
+    }
+}
+
+/* ============================================================
+   DARK MODE
+==============================================================*/
+body.dark-mode {
+    background: #111;
+    color: #eee;
+}
+
+body.dark-mode .main-nav {
+    background: #000;
+    border-bottom: 1px solid #333;
+}
+
+body.dark-mode .nav-item-main {
+    color: #eee !important;
+}
+
+body.dark-mode .footer-section {
+    background: #000;
+}
+
+/* ============================================================
+   MOBILE BOTTOM NAVBAR
+==============================================================*/
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    border-top: 1px solid #ddd;
+    z-index: 9999;
+}
+
+.mobile-bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #222;
+    font-size: 12px;
+    text-decoration: none;
+    transition: 0.2s ease;
+    position: relative;
+}
+
+.mobile-bottom-nav .nav-item i {
+    font-size: 20px;
+    margin-bottom: 2px;
+}
+
+.mobile-bottom-nav .nav-item:hover {
+    color: #e60000;
+}
+
+.mobile-bottom-nav .cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    font-size: 10px;
+    padding: 1px 4px;
+}
+/* PROFILE DROPDOWN FIX */
+#profileDropdownMenu {
+    transition: opacity 0.3s ease;
+}
+#profileDropdownMenu.show {
+    display: block;
+    opacity: 1;
+}

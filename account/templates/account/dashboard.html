@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}My Account | Dashboard{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Manage your account, addresses, and view your orders.">
+{% endblock %}
+
+{% block content %}
+<style>
+    .account-header {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 32px;
+    }
+
+    .account-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d6efd, #5a8dee);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        flex-shrink: 0;
+    }
+
+    .account-name {
+        font-size: 1.4rem;
+        font-weight: 600;
+    }
+
+    .account-email {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .info-card {
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    .section-card {
+        border-radius: 18px;
+        box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+    }
+
+    .badge-status {
+        padding: 6px 10px;
+        font-weight: 500;
+        border-radius: 8px;
+    }
+
+    .address-item {
+        padding: 16px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    .address-item:last-child {
+        border-bottom: none;
+    }
+
+    .table thead th {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+</style>
+
+<div class="container my-5">
+
+    <!-- ACCOUNT HEADER -->
+    <div class="account-header">
+        <div class="account-avatar">
+            {{ request.user.username|slice:":1" }}
+        </div>
+        <div>
+            <div class="account-name">
+                {{ request.user.username }}
+            </div>
+            <div class="account-email">
+                {{ request.user.email }}
+            </div>
+        </div>
+    </div>
+
+    <!-- BASIC INFO -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card info-card border-0">
+                <div class="card-body">
+                    <small class="text-muted">Full Name</small>
+                    <h5 class="mb-0">{{ request.user.username|default:"-" }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card info-card border-0">
+                <div class="card-body">
+                    <small class="text-muted">Email Address</small>
+                    <h5 class="mb-0">{{ request.user.email }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="card section-card border-0 mb-5">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0 fw-semibold">My Addresses</h5>
+                <a href="{% url 'account:address_list' %}" class="btn btn-sm btn-outline-primary">
+                    Manage
+                </a>
+            </div>
+
+            {% if addresses %}
+                {% for address in addresses %}
+                    <div class="address-item d-flex justify-content-between">
+                        <div>
+                            <strong>{{ address.full_name }}</strong><br>
+                            {{ address.address_line_1 }}
+                            {% if address.address_line_2 %}, {{ address.address_line_2 }}{% endif %}<br>
+                            {{ address.city }}, {{ address.state }} - {{ address.pincode }}<br>
+                            <small class="text-muted">{{ address.get_address_type_display }}</small>
+                        </div>
+
+                        {% if address.is_default %}
+                            <span class="badge bg-success align-self-start">Default</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">
+                    No address added yet.
+                    <a href="{% url 'account:address_list' %}">Add Address</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="card section-card border-0">
+        <div class="card-body p-4">
+            <h5 class="fw-semibold mb-4">My Orders</h5>
+
+            {% if orders %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Order #</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr>
+                                    <td>{{ order.order_number }}</td>
+                                    <td>{{ order.created_at|date:"d M Y" }}</td>
+                                    <td>₹ {{ order.total_amount }}</td>
+                                    <td>
+                                        {% if order.status == 'pending' %}
+                                            <span class="badge bg-warning text-dark badge-status">Pending</span>
+                                        {% elif order.status == 'completed' %}
+                                            <span class="badge bg-success badge-status">Completed</span>
+                                        {% elif order.status == 'cancelled' %}
+                                            <span class="badge bg-danger badge-status">Cancelled</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary badge-status">{{ order.status|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{% url 'order:order_list' %}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    You have not placed any orders yet.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

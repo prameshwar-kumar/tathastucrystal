@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container my-4">
+  <div class="row g-4">
+
+    <!-- LEFT : IMAGES -->
+    <div class="col-12 col-md-6">
+      <div id="productCarousel" class="carousel slide">
+        <div class="carousel-inner">
+          {% if gallery %}
+          {% for img in gallery %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img src="{{ img.image.url }}" class="d-block w-100 rounded main-img"
+              style="max-height:600px; object-fit:contain;">
+          </div>
+          {% endfor %}
+          {% else %}
+          <div class="carousel-item active">
+            <img src="{% static 'images/product-placeholder.jpg' %}" class="d-block w-100 rounded"
+              style="max-height:600px; object-fit:contain;">
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Thumbnails -->
+      <div class="mt-3 d-flex flex-wrap gap-2 thumbnail-container">
+        {% for img in gallery %}
+        <img src="{{ img.image.url }}" class="rounded border gallery-thumb"
+          style="width:90px; height:90px; object-fit:cover;" data-index="{{ forloop.counter0 }}">
+        {% endfor %}
+      </div>
+    </div>
+
+
+    <!-- RIGHT : DETAILS -->
+    <div class="col-12 col-md-6">
+
+      <h2>{{ product.name }}</h2>
+
+      <!-- STAR RATING -->
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <div class="text-warning fs-5">
+          {% for i in "12345" %}
+          {% if forloop.counter <= product.average_rating %} ★ {% else %} ☆ {% endif %} {% endfor %} </div>
+            <small class="text-muted">
+              ({{ product.reviews.count }} ratings)
+            </small>
+        </div>
+
+        <!-- PEOPLE WATCHING -->
+        <p class="text-success fw-semibold mb-2">
+          👀 {{ watching_count }} people are viewing this product right now
+        </p>
+
+        <p class="text-muted mb-2">
+          {% if product.brand %}Brand: {{ product.brand.name }} |{% endif %}
+          Category:
+          <a href="{{ product.category.get_absolute_url }}">
+            {{ product.category.name }}
+          </a>
+        </p>
+
+        <!-- PRICE -->
+        <div class="mb-3">
+          {% if product.discount_price %}
+          <h4 class="d-inline">₹{{ product.discount_price }}</h4>
+          <small class="text-muted text-decoration-line-through ms-2">
+            ₹{{ product.price }}
+          </small>
+          <span class="text-danger fw-bold ms-2">
+            {{ product.discount_percentage }}% OFF
+          </span>
+          {% else %}
+          <h4>₹{{ product.price }}</h4>
+          {% endif %}
+        </div>
+
+        <p>{{ product.short_description }}</p>
+
+        <!-- STOCK -->
+        {% if product.stock > 0 %}
+        <span class="badge bg-success mb-3">In Stock</span>
+        {% else %}
+        <span class="badge bg-danger mb-3">Out of Stock</span>
+        {% endif %}
+
+        <!-- CART -->
+        {% if product.stock > 0 %}
+        <form method="post" action="{% url 'cart:add' 'crystal' product.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="buy_now" value="0" class="buy-now-flag">
+
+          <div class="d-flex gap-2 align-items-center mb-4 flex-wrap">
+
+            <div class="input-group" style="width:130px;">
+              <button type="button" class="btn btn-outline-primary btn-qty" data-action="minus">-</button>
+              <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}"
+                class="form-control text-center quantity-input">
+              <button type="button" class="btn btn-outline-primary btn-qty" data-action="plus">+</button>
+            </div>
+
+            <button class="btn btn-primary">Add to Cart</button>
+
+            <button type="submit" class="btn btn-warning buy-now-btn text-dark">
+              Buy Now
+            </button>
+          </div>
+        </form>
+        <!-- INFO LINES BELOW BUY NOW -->
+        <div class="mt-3">
+          <!-- Delhivery Pincode Check -->
+          <div class="mb-2 p-2 border rounded">
+            <strong>Delhivery Check:</strong>
+            <div class="d-flex gap-2 align-items-center mt-1">
+              <input type="text" id="pincode" class="form-control" placeholder="Enter Pincode" style="width:150px;">
+              <button type="button" class="btn btn-outline-primary btn-sm" id="checkPincode">Check</button>
+            </div>
+            <small id="deliveryInfo" class="text-success mt-1 d-block"></small>
+          </div>
+
+          <!-- Free Shipping -->
+          <div class="mb-2">
+            <strong>Free Shipping:</strong> This product is available for free shipping!
+          </div>
+
+          <!-- Return Policy -->
+          <div class="mb-2">
+            <strong>Returns:</strong> You can return within 7 days after deliver!
+          </div>
+
+          <!-- Secure Checkout -->
+          <div class="mb-2">
+            <strong>Secure Checkout:</strong> Your payment information is safe with trusted payment method.
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <a href="#desc">For product info click here 👈 <span style="font-size:1.2rem;"></span></a>
+        </div>
+
+        <div class="text-center">
+          <img src="{% static 'images/secure-checkout.png' %}" alt="Secure Checkout" style="height:150px;" class="me-2">
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+
+  <!-- TABS -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#desc">Description</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#dimensions">Dimensions</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#weight">Weight</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#review">Reviews</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#qa">Q & A</button>
+        </li>
+      </ul>
+
+      <div class="tab-content border border-top-0 p-3">
+
+        <!-- DESCRIPTION -->
+        <div class="tab-pane fade show active" id="desc">
+          {{ product.description|linebreaks }}
+        </div>
+
+        <!-- DIMENSIONS -->
+        <div class="tab-pane fade" id="dimensions">
+          {% if product.length or product.width or product.height %}
+          <table class="table table-bordered w-50">
+            <tbody>
+              <tr>
+                <th>Length</th>
+                <td>{{ product.length|default:"N/A" }} cm</td>
+              </tr>
+              <tr>
+                <th>Width</th>
+                <td>{{ product.width|default:"N/A" }} cm</td>
+              </tr>
+              <tr>
+                <th>Height</th>
+                <td>{{ product.height|default:"N/A" }} cm</td>
+              </tr>
+            </tbody>
+          </table>
+          {% else %}
+          <p>Dimensions not available.</p>
+          {% endif %}
+        </div>
+
+
+        <!-- WEIGHT -->
+        <div class="tab-pane fade" id="weight">
+          {% if product.weight %}
+          <table class="table table-bordered w-50">
+            <tbody>
+              <tr>
+                <th>Weight</th>
+                <td>{{ product.weight }} g</td>
+              </tr>
+            </tbody>
+          </table>
+          {% else %}
+          <p>Weight not available.</p>
+          {% endif %}
+        </div>
+
+
+        <!-- REVIEWS TAB -->
+        <div class="tab-pane fade" id="review">
+
+          {% for review in product.reviews.all %}
+          <div class="border-bottom mb-3 pb-2">
+            <strong>{{ review.user.username }}</strong>
+
+            <span class="text-warning ms-2">
+              {% for i in "12345" %}
+              {% if forloop.counter <= review.rating %} ★ {% else %} ☆ {% endif %} {% endfor %} </span>
+
+                <p class="mb-1">{{ review.comment }}</p>
+          </div>
+          {% empty %}
+          <p>No reviews yet.</p>
+          {% endfor %}
+
+          <hr>
+
+          {% if user.is_authenticated %}
+          <form method="post" id="reviewForm">
+            {% csrf_token %}
+
+            <!-- STAR INPUT -->
+            <div class="star-rating mb-2">
+              {% for i in "54321" %}
+              <input type="radio" id="review-star-{{ i }}" name="rating" value="{{ i }}" required>
+              <label for="review-star-{{ i }}">★</label>
+              {% endfor %}
+            </div>
+
+            <textarea name="comment" class="form-control mb-2" placeholder="Write your review" required></textarea>
+
+            <button type="submit" class="btn btn-primary btn-sm">
+              Submit Review
+            </button>
+          </form>
+          {% else %}
+          <a href="{% url 'account:login' %}" class="btn btn-outline-primary btn-sm">
+            Login to write a review
+          </a>
+          {% endif %}
+
+        </div>
+
+        <!-- Q & A -->
+        <div class="tab-pane fade" id="qa">
+
+          {% for qa in product.qas.all %}
+          <p><strong>Q:</strong> {{ qa.question }}</p>
+
+          {% if qa.answer %}
+          <p class="text-success">
+            <strong>A:</strong> {{ qa.answer }}
+          </p>
+          {% endif %}
+
+          <hr>
+          {% empty %}
+          <p>No questions yet.</p>
+          {% endfor %}
+
+          {% if user.is_authenticated %}
+          <form method="post">
+            {% csrf_token %}
+            <textarea name="question" class="form-control mb-2" placeholder="Ask a question" required></textarea>
+            <button class="btn btn-secondary btn-sm">
+              Submit Question
+            </button>
+          </form>
+          {% else %}
+          <a href="{% url 'account:login' %}" class="btn btn-outline-secondary btn-sm">
+            Login to ask a question
+          </a>
+          {% endif %}
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("click", function (e) {
+
+    if (e.target.classList.contains("btn-qty")) {
+      const input = e.target.closest(".input-group").querySelector("input");
+      let val = parseInt(input.value);
+      if (e.target.dataset.action === "plus") {
+        if (val < parseInt(e.target.closest(".input-group").querySelector("input").max)) val++;
+      }
+      if (e.target.dataset.action === "minus" && val > 1) val--;
+      input.value = val;
+    }
+
+    if (e.target.classList.contains("buy-now-btn")) {
+      document.querySelector(".buy-now-flag").value = "1";
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const thumbnails = document.querySelectorAll(".gallery-thumb");
+    const carouselItems = document.querySelectorAll("#productCarousel .carousel-item");
+
+    thumbnails.forEach(thumb => {
+      thumb.addEventListener("click", () => {
+        const index = parseInt(thumb.dataset.index);
+
+        carouselItems.forEach((item, i) => {
+          item.classList.toggle("active", i === index);
+        });
+      });
+    });
+  });
+
+  document.getElementById('checkPincode').addEventListener('click', function () {
+    const pin = document.getElementById('pincode').value.trim();
+    const info = document.getElementById('deliveryInfo');
+
+    if (!/^\d{6}$/.test(pin)) {
+      info.classList.remove('text-success');
+      info.classList.add('text-danger');
+      info.textContent = 'Please enter a valid 6-digit pincode.';
+      return;
+    }
+
+    info.classList.remove('text-danger');
+    info.classList.add('text-success');
+
+    const today = new Date();
+    const minDays = 2;
+    const maxDays = 7;
+
+    const minDate = new Date();
+    minDate.setDate(today.getDate() + minDays);
+
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + maxDays);
+
+    const options = { weekday: 'short', day: 'numeric', month: 'short' };
+    const minDateStr = minDate.toLocaleDateString('en-IN', options);
+    const maxDateStr = maxDate.toLocaleDateString('en-IN', options);
+
+    info.textContent = `Delivery possible between ${minDateStr} - ${maxDateStr} .`;
+  });
+  
+</script>
+
+<style>
+  .star-rating {
+    direction: rtl;
+    font-size: 1.5rem;
+    display: inline-flex;
+    justify-content: flex-start;
+  }
+
+  .star-rating input {
+    display: none;
+  }
+
+  .star-rating label {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .star-rating input:checked~label,
+  .star-rating label:hover,
+  .star-rating label:hover~label {
+    color: #ffc107;
+  }
+
+  .thumbnail-container {
+    overflow: visible;
+    /* allows zoom outside container */
+  }
+
+  .gallery-thumb {
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    transform-origin: center center;
+    z-index: 1;
+  }
+
+  .gallery-thumb:hover {
+    transform: scale(1.2);
+    border-color: #007bff;
+    z-index: 10;
+  }
+
+  /* Remove number input spinner */
+  input[type=number].quantity-input {
+    appearance: none;
+    -moz-appearance: textfield;
+  }
+
+  input[type=number].quantity-input::-webkit-inner-spin-button,
+  input[type=number].quantity-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+</style>
+
+
+{% endblock %}
