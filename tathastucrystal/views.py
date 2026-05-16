@@ -1,4 +1,4 @@
-# tathastubhava/views.py
+# tathastucrystal/views.py
 
 from django.shortcuts import render
 from blog.models import BlogPost, BlogCategory
