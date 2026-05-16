@@ -8,7 +8,7 @@
   <div id="imageSlider" class="carousel slide mx-auto" style="max-width:1000px;" data-bs-ride="carousel"
     data-bs-interval="1500">
     <div class="carousel-inner">
-      {% for i in "1234567" %}
+      {% for i in "123456" %}
       <div class="carousel-item {% if forloop.first %}active{% endif %}">
         <img src="{% static 'images/banner'|add:i|add:'.jpg' %}" class="d-block w-100 rounded"
           style="height:550px; object-fit:content;" alt="Slide {{ i }}">
@@ -24,7 +24,7 @@
     </button>
 
     <div class="carousel-indicators">
-      {% for i in "1234567" %}
+      {% for i in "123456" %}
       <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="{{ forloop.counter0 }}"
         class="{% if forloop.first %}active{% endif %}">
       </button>
