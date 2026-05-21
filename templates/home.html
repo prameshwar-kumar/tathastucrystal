@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+{% endblock %}
 {% block content %}
 
 <div class="container my-4">
@@ -159,39 +164,4 @@
 
   </div>
 </div>
-<!-- ================= UI Enhancements ================= -->
-<style>
-  .blog-card {
-    max-width: 720px;
-    border-radius: 18px;
-    overflow: hidden;
-    transition: transform .25s ease, box-shadow .25s ease;
-  }
-
-  .blog-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, .12);
-  }
-
-  .related-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 14px;
-    background: #f8f9fa;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
-
-  .related-icon img {
-    max-height: 42px;
-    object-fit: contain;
-  }
-
-  .related-icon:hover {
-    transform: scale(1.08);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, .15);
-  }
-</style>
 {% endblock %}
