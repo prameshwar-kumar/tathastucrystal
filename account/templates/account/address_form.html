@@ -28,91 +28,206 @@
                         {% endfor %}
                     {% endif %}
 
-                    <form method="POST" novalidate>
+                    <form method="POST" novalidate autocomplete="off">
                         {% csrf_token %}
 
                         <!-- Full Name -->
                         <div class="mb-3">
-                            <label class="form-label fw-medium">Full Name</label>
-                            <input type="text" name="full_name" class="form-control"
-                                   placeholder="Full Name"
-                                   value="{{ address.full_name|default:'' }}"
-                                   required>
+                            <label class="form-label fw-medium" for="full_name">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="full_name"
+                                name="full_name"
+                                class="form-control"
+                                placeholder="Full Name"
+                                value="{{ address.full_name|default:''|escape }}"
+                                required
+                                minlength="3"
+                                maxlength="100"
+                                pattern="^[A-Za-z\s]+$"
+                                autocomplete="name">
+
+                            <div class="invalid-feedback">
+                                Enter a valid full name (letters only).
+                            </div>
                         </div>
 
                         <!-- Phone -->
                         <div class="mb-3">
-                            <label class="form-label fw-medium">Phone</label>
-                            <input type="text" name="phone" class="form-control"
-                                   placeholder="Phone Number"
-                                   value="{{ address.phone|default:'' }}"
-                                   required>
+                            <label class="form-label fw-medium" for="phone">
+                                Phone
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                class="form-control"
+                                placeholder="10-digit Phone Number"
+                                value="{{ address.phone|default:''|escape }}"
+                                required
+                                pattern="^[6-9]\d{9}$"
+                                maxlength="10"
+                                inputmode="numeric"
+                                autocomplete="tel">
+
+                            <div class="invalid-feedback">
+                                Enter a valid 10-digit Indian phone number.
+                            </div>
                         </div>
 
                         <!-- Address Line 1 -->
                         <div class="mb-3">
-                            <label class="form-label fw-medium">Address Line 1</label>
-                            <input type="text" name="address_line_1" class="form-control"
-                                   placeholder="Address Line 1"
-                                   value="{{ address.address_line_1|default:'' }}"
-                                   required>
+                            <label class="form-label fw-medium" for="address_line_1">
+                                Address Line 1
+                            </label>
+
+                            <input
+                                type="text"
+                                id="address_line_1"
+                                name="address_line_1"
+                                class="form-control"
+                                placeholder="Address Line 1"
+                                value="{{ address.address_line_1|default:''|escape }}"
+                                required
+                                minlength="5"
+                                maxlength="255"
+                                autocomplete="address-line1">
+
+                            <div class="invalid-feedback">
+                                Address must be between 5 and 255 characters.
+                            </div>
                         </div>
 
                         <!-- Address Line 2 -->
                         <div class="mb-3">
-                            <label class="form-label fw-medium">Address Line 2</label>
-                            <input type="text" name="address_line_2" class="form-control"
-                                   placeholder="Address Line 2"
-                                   value="{{ address.address_line_2|default:'' }}">
+                            <label class="form-label fw-medium" for="address_line_2">
+                                Address Line 2
+                            </label>
+
+                            <input
+                                type="text"
+                                id="address_line_2"
+                                name="address_line_2"
+                                class="form-control"
+                                placeholder="Address Line 2"
+                                value="{{ address.address_line_2|default:''|escape }}"
+                                maxlength="255"
+                                autocomplete="address-line2">
                         </div>
 
                         <!-- City -->
                         <div class="mb-3">
-                            <label class="form-label fw-medium">City</label>
-                            <input type="text" name="city" class="form-control"
-                                   placeholder="City"
-                                   value="{{ address.city|default:'' }}"
-                                   required>
+                            <label class="form-label fw-medium" for="city">
+                                City
+                            </label>
+
+                            <input
+                                type="text"
+                                id="city"
+                                name="city"
+                                class="form-control"
+                                placeholder="City"
+                                value="{{ address.city|default:''|escape }}"
+                                required
+                                minlength="2"
+                                maxlength="100"
+                                pattern="^[A-Za-z\s]+$"
+                                autocomplete="address-level2">
+
+                            <div class="invalid-feedback">
+                                Enter a valid city name.
+                            </div>
                         </div>
 
                         <!-- State -->
                         <div class="mb-3">
-                            <label class="form-label fw-medium">State</label>
-                            <input type="text" name="state" class="form-control"
-                                   placeholder="State"
-                                   value="{{ address.state|default:'' }}"
-                                   required>
+                            <label class="form-label fw-medium" for="state">
+                                State
+                            </label>
+
+                            <input
+                                type="text"
+                                id="state"
+                                name="state"
+                                class="form-control"
+                                placeholder="State"
+                                value="{{ address.state|default:''|escape }}"
+                                required
+                                minlength="2"
+                                maxlength="100"
+                                pattern="^[A-Za-z\s]+$"
+                                autocomplete="address-level1">
+
+                            <div class="invalid-feedback">
+                                Enter a valid state name.
+                            </div>
                         </div>
 
                         <!-- Pincode -->
                         <div class="mb-3">
-                            <label class="form-label fw-medium">Pincode</label>
-                            <input type="text" name="pincode" class="form-control"
-                                   placeholder="Pincode"
-                                   value="{{ address.pincode|default:'' }}"
-                                   required>
+                            <label class="form-label fw-medium" for="pincode">
+                                Pincode
+                            </label>
+
+                            <input
+                                type="text"
+                                id="pincode"
+                                name="pincode"
+                                class="form-control"
+                                placeholder="6-digit Pincode"
+                                value="{{ address.pincode|default:''|escape }}"
+                                required
+                                pattern="^\d{6}$"
+                                maxlength="6"
+                                inputmode="numeric"
+                                autocomplete="postal-code">
+
+                            <div class="invalid-feedback">
+                                Enter a valid 6-digit pincode.
+                            </div>
                         </div>
 
                         <!-- Address Type -->
                         <div class="mb-3">
-                            <label class="form-label fw-medium">Address Type</label>
-                            <select name="address_type" class="form-control" required>
+                            <label class="form-label fw-medium" for="address_type">
+                                Address Type
+                            </label>
+
+                            <select
+                                id="address_type"
+                                name="address_type"
+                                class="form-select"
+                                required>
+
                                 <option value="shipping"
                                     {% if address.address_type == "shipping" %}selected{% endif %}>
                                     Shipping
                                 </option>
+
                                 <option value="billing"
                                     {% if address.address_type == "billing" %}selected{% endif %}>
                                     Billing
                                 </option>
                             </select>
+
+                            <div class="invalid-feedback">
+                                Please select an address type.
+                            </div>
                         </div>
 
                         <!-- Default Address -->
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox"
-                                   id="is_default" name="is_default"
-                                   {% if address.is_default %}checked{% endif %}>
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="is_default"
+                                name="is_default"
+                                {% if address.is_default %}checked{% endif %}>
+
                             <label class="form-check-label" for="is_default">
                                 Set as default address
                             </label>
@@ -133,4 +248,35 @@
         </div>
     </div>
 </div>
+
+<!-- Bootstrap Validation -->
+<script>
+(() => {
+    'use strict';
+
+    const forms = document.querySelectorAll('form');
+
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+
+            // Prevent script injection attempts
+            const inputs = form.querySelectorAll('input[type="text"], input[type="tel"]');
+
+            inputs.forEach(input => {
+                input.value = input.value
+                    .trim()
+                    .replace(/[<>]/g, '');
+            });
+
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+
 {% endblock %}
