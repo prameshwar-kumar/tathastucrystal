@@ -3,6 +3,7 @@
 from django.shortcuts import render
 from blog.models import BlogPost, BlogCategory
 from crystal.models import Category as CrystalCategory
+from tathastucrystal import settings
 from worship.models import Category as WorshipCategory
 
 

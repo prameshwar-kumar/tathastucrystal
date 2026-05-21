@@ -76,6 +76,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 # Category context processors
+                "tathastucrystal.context_processors.contact_info",
                 'crystal.context_processors.crystal_categories',
                 'worship.context_processors.worship_categories',
 
@@ -164,9 +165,8 @@ AUTH_USER_MODEL = 'account.CustomUser'
 # DEFAULT_FROM_EMAIL = 'noreply@example.com'
 
 
-# =========================
-# EMAIL (SMTP - GMAIL)
-# =========================
+
+# Email Otp for Login and Signup
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.gmail.com'
@@ -176,9 +176,12 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-# =========================
-# Razorpay Implementation
-# =========================
 
+# Razorpay Implementation
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
+
+# Owner Email and Phone 
+ADDRESS = os.getenv("ADDRESS")
+EMAIL = os.getenv("EMAIL")
+PHONE = os.getenv("PHONE")
